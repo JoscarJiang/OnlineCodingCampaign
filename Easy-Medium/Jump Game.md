@@ -4,7 +4,8 @@ You are given an integer array nums. You are initially positioned at the array's
 
 Return true if you can reach the last index, or false otherwise.
 
-'''python
+### Code
+```python
 
 class Solution:
     def canJump(self, nums: List[int]) -> bool:
@@ -16,10 +17,11 @@ class Solution:
             max_jump_to = max(max_jump_to, num + i)
             
         return True
-'''
-Time complexity : O(n)
-Space complexity: O(1)
-Note: maintain a max reachable distance
+```
+### Analysis
+- Time complexity : O(n)
+- Space complexity: O(1)
+- Note: maintain a max reachable distance
 
 ## 45 Jump Game II
 [Jump Game II](https://leetcode.com/problems/jump-game-ii/)
@@ -32,7 +34,8 @@ Each element nums[i] represents the maximum length of a forward jump from index 
 - i + j < n
 Return the minimum number of jumps to reach nums[n - 1]. The test cases are generated such that you can reach nums[n - 1].
 
-'''python
+### Code
+```python
 
 class Solution:
     def jump(self, nums: List[int]) -> int:
@@ -53,7 +56,8 @@ class Solution:
         # Return the minimum number of jumps required
         return count
 
-'''
-Time complexity : O(n)
-Space complexity: O(1)
-Note: greedy approach to find the jump steps from the beginning to stops(last == i).
+```
+### Analysis
+- Time complexity : O(n)
+- Space complexity: O(1)
+- Note: greedy approach to find the jump steps from the beginning to stops(last == i).
