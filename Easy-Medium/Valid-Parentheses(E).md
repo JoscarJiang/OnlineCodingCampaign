@@ -48,3 +48,11 @@ Approach:
 Time complexity: O(n) - traverse the string once and perform constant time operations for each character.
 
 Space complexity:O(n) - the worst-case scenario is when all opening brackets are present in the string and the stack will have to store them all.
+
+
+**Company Coding Questions:**
+https://platform.stratascratch.com/coding?order_field=-attempts_count&code_type=3&job_positions=1&job_positions=2&job_positions=4
+**Blind 75 Solu:**
+https://docs.google.com/spreadsheets/d/1A2PaQKcdwO_lwxz9bAnxXnIQayCouZP6d-ENrBz_NXc/edit#gid=0
+**Blind 75**
+https://neetcode.io/practice
