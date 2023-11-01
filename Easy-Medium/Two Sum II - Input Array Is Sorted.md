@@ -8,7 +8,7 @@ Return the indices of the two numbers, index1 and index2, added by one as an int
 
 The tests are generated such that there is exactly one solution. You may not use the same element twice.
 
-Your solution must use **only constant extra space**.
+Your solution must use only **constant extra space**.
 ## Code
 ```python
 
@@ -46,6 +46,7 @@ class Solution:
 ```
 
 ## Best
+```python
 def twoSum(self, numbers: List[int], target: int) -> List[int]:
         left, right = 0, len(numbers)-1 
         sum  = 0
@@ -57,10 +58,10 @@ def twoSum(self, numbers: List[int], target: int) -> List[int]:
                 left += 1
             else:
                 return left+1, right+1
-
+```
 ## Analysis
 - Time complexity : O(n) -- Best  O(n^2) -- Mine
 - Space complexity: O(1)
-- Note: First Version is easy to run long time even with some accelebrating techniques.
+- Note: Because the constraint constant extra space so we can't use Hash table. First Version is easy to run long time even with some accelebrating techniques.
 Second solution makes use of sorted features, using 2 pointers starting from left and right to find. 
         
