@@ -31,7 +31,7 @@ class Solution:
             cut_nodes = []
             for node in nodes:
                 if len(tree[node]) == 1:
-                    # not leaf
+                    # find the leaf
                     cut_nodes.append(node)     
                     n = n - 1
             for node in cut_nodes:
