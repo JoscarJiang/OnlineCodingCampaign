@@ -16,7 +16,6 @@ The height of a rooted tree is the number of edges on the longest downward path 
 ```python
 class Solution:
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
-        # get the longest path and we can get the middle points
         if n == 1:
             return [0]
         elif n == 2:
@@ -27,7 +26,7 @@ class Solution:
             tree[edge[1]].add(edge[0])
         nodes = [i for i in range(n)]
 
-        # delete those have
+        # find and delete leafs each iteration
         while n > 2: 
             cut_nodes = []
             for node in nodes:
