@@ -31,6 +31,7 @@ Output: [1,1,2,3,4,4]
 class Solution(object):
     def mergeTwoLists(self, list1, list2):
         newHead = dummyHead = ListNode()
+        # run after list1, list2 not none, can also use while list1 != None and list2 != None: #1
         while list1 and list2:
             if list1.val < list2.val:
                 dummyHead.next = list1
@@ -39,7 +40,8 @@ class Solution(object):
                 dummyHead.next = list2
                 list2 = list2.next
             dummyHead = dummyHead.next
-        
+
+        # adds whatever left 
         if list1:
             dummyHead.next = list1
         if list2:
