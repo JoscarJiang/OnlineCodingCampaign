@@ -62,4 +62,31 @@ class Solution:
 
 -- string[::-1], it generates a reversed copy of the original string.
 
+    **Other use cases about [start:stop:step] syntax**
+    
+```python
+# reverse using string[::-1]
+original_list = [1, 2, 3, 4, 5]
+reversed_list = original_list[::-1]
+print(reversed_list)  # Output: [5, 4, 3, 2, 1]
+
+# select every X element string[::X]
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+selected_numbers = numbers[::2]  # This selects every second element
+print(selected_numbers)  # Output: [1, 3, 5, 7, 9]
+
+# copy a sequence
+original = [10, 20, 30, 40, 50]
+copied = original[:]
+
+# truncate a Sequence
+values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+truncated = values[2:7:2]  # Start at index 2, end at index 7, step 2
+print(truncated)  # Output: [3, 5, 7]
+
+
+
+ ```       
+    
+
 
