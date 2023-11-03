@@ -16,7 +16,9 @@ Notice that you may not slant the container.
 Eevn with some optimization, but it's still hard to pass some test cases.
 
 ```python
-max_v = 0
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        max_v = 0
         best_j = len(height) - 1
         temp_j = len(height) - 1
         for i in range(len(height)):
