@@ -4,6 +4,7 @@ SELECT SUM(population) FROM city WHERE district = "California"
 ```
 
 ## average
+(The Blunder)[https://www.hackerrank.com/challenges/the-blunder/problem?isFullScreen=true]
 ```sql
 SELECT CEIL(AVG(salary) - AVG(CAST(REPLACE(CAST(salary AS CHAR), "0", "") AS SIGNED))) FROM employees
 ```
