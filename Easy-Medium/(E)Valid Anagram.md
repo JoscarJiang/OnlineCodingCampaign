@@ -1,4 +1,4 @@
-# 4 Valid Palindrome (easy)
+# 7 Valid Anagram (easy)
 **Leetcode Link:** [https://leetcode.com/problems/valid-palindrome/description/](https://leetcode.com/problems/valid-anagram/submissions/)
 
 **FROM Grind 75 Questions** https://www.techinterviewhandbook.org/grind75
