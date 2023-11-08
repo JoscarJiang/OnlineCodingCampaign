@@ -83,10 +83,68 @@ def invalid_tweets(tweets: pd.DataFrame) -> pd.DataFrame:
 ```
 
 
-### 6
+### 6 calculate-special-bonus
+https://leetcode.com/problems/calculate-special-bonus/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def calculate_special_bonus(employees: pd.DataFrame) -> pd.DataFrame:
+    # by default 0
+    employees['bonus'] = 0
+    # dataframe.loc[]
+    employees.loc[(employees['employee_id']% 2 !=0) & (~employees['name'].str.startswith('M')),'bonus' ]  = employees['salary']
+    df = employees[['employee_id','bonus']].sort_values(by='employee_id', ascending=True)
+    return df
+
+```
+
+dataframe.loc[]
+
+dataframe.loc['column'], dataframe.loc[df['shield'] > 6]
+
+https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.loc.html
+
+
+
+### 7 fix-names-in-a-table
+https://leetcode.com/problems/fix-names-in-a-table/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def fix_names(users: pd.DataFrame) -> pd.DataFrame:
+    # str.capitalize() to make name from 'aLice' to 'Alice'
+    users['name'] = users['name'].str.capitalize()
+    df = users.sort_values(by = 'user_id')
+
+    return df
+
+```
+str.capitalize() to make name from 'aLice' to 'Alice'
+
+### 8
+https://leetcode.com/problems/find-users-with-valid-e-mails/solutions/3853585/regex-explained-pandas-mysql-an-effortless-and-simple-approach-with-comments/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
 
+def valid_emails(users: pd.DataFrame) -> pd.DataFrame:
+    # valid emails, use regex pattern
+    users_valid = users[users['mail'].str.match(r'^[A-Za-z][A-Za-z0-9_\.\-]*@leetcode\.com$')]
+    return users_valid
+
+
+```
+understand regex
+match(r'^  -------   $')
+
+### 9
+
+```python
+
+
+```
+
+
+### 10
+
+```python
 
 
 ```
