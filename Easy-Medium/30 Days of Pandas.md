@@ -119,7 +119,7 @@ def fix_names(users: pd.DataFrame) -> pd.DataFrame:
 ```
 str.capitalize() to make name from 'aLice' to 'Alice'
 
-### 8
+### 8 find-users-with-valid-e-mails
 https://leetcode.com/problems/find-users-with-valid-e-mails/solutions/3853585/regex-explained-pandas-mysql-an-effortless-and-simple-approach-with-comments/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
@@ -134,17 +134,41 @@ def valid_emails(users: pd.DataFrame) -> pd.DataFrame:
 understand regex
 match(r'^  -------   $')
 
-### 9
+### 9 patients-with-a-condition
+https://leetcode.com/problems/patients-with-a-condition/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
 
+def find_patients(patients: pd.DataFrame) -> pd.DataFrame:
+    # cannot use this 
+    # df = patients[patients['conditions'].str.contains('DIAB1')]
+
+
+    # The \b in the pattern is a word boundary assertion that ensures 'DIAB1' is a separate word and not part of another word. 
+    df = patients[patients['conditions'].str.contains(r'\bDIAB1')]
+    return df
 
 ```
+dd[df[''].str.contains(r'')]
 
-
-### 10
+### 10 nth-highest-salary
+https://leetcode.com/problems/nth-highest-salary/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
-
+def nth_highest_salary(employee: pd.DataFrame, N: int) -> pd.DataFrame:
+    # df is 'IntegerArray' object, has no attribute 'sort_values'
+    df = employee['salary'].unique()
+    if len(df) < N:
+        return pd.DataFrame([np.NaN],columns=[f'getNthHighestSalary({N})'])
+    else:
+        salary = sorted(df, reverse=True)[N-1]
+        # pd.DataFrame([XXXX],columns=[XXX])
+        return pd.DataFrame([salary],columns=[f'getNthHighestSalary({N})'])
 
 ```
+
+df[].unique()
+
+sorted(IntegerArray)
+
+pd.DataFrame([],columns=[])
