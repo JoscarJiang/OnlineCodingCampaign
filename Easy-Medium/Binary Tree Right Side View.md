@@ -23,27 +23,27 @@ The question is confusing and should be rephrased as **return the values of righ
 #         self.right = right
 class Solution:
     def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
-        stack = []
+        queue = []
         rs = []
         node = root
         if node is None:
             return rs
-        stack.append(root)
-        while len(stack) > 0:
-            temp_stack = []
+        queue.append(root)
+        while len(queue) > 0:
+            temp_queue = []
             first = True
-            while len(stack) > 0:
-                node = stack.pop(0) # pop the first element
+            while len(queue) > 0:
+                node = queue.pop(0) # pop the first element
                 if first:
                     # first element is always the rightmost
                     rs.append(node.val)
                     first = False
                 if node.right is not None:
-                    temp_stack.append(node.right)
+                    temp_queue.append(node.right)
                 if node.left is not None:
-                    temp_stack.append(node.left)
+                    temp_queue.append(node.left)
                 
-            stack = temp_stack
+            queue = temp_queue
 
         return rs
         
