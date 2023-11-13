@@ -285,3 +285,83 @@ use pd.melt to arrange dataframe
 pd.melt(dataframe, id_vars=[''], var_name='', value_vars=[], value_name='')
 
 
+### 16 count-salary-categories
+https://leetcode.com/problems/count-salary-categories/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def count_salary_categories(accounts: pd.DataFrame) -> pd.DataFrame:
+    low_sal = accounts[accounts['income']<20000]
+    avg_sal = accounts[(accounts['income']>=20000) & (accounts['income']<=50000)]
+    high_sal = accounts[accounts['income']>50000]
+
+    result = pd.DataFrame({
+        'category':['Low Salary','Average Salary','High Salary'],
+        'accounts_count':[len(low_sal),len(avg_sal),len(high_sal)]
+    })
+
+    fin_result = result.sort_values(by = ['accounts_count'], ascending = False)
+
+    return fin_result
+
+```
+
+
+
+```python
+def count_salary_categories(accounts: pd.DataFrame) -> pd.DataFrame:
+    return pd.DataFrame({
+        'category': ['Low Salary', 'Average Salary', 'High Salary'],
+        'accounts_count': [
+            accounts[accounts.income < 20000].shape[0],
+            accounts[(accounts.income >= 20000) & (accounts.income <= 50000)].shape[0],
+            accounts[accounts.income > 50000].shape[0],
+        ],
+    })
+
+```
+
+use df.shape[0] or len(df) to count row number
+
+
+### 17
+
+```python
+
+
+
+```
+
+### 18
+
+```python
+
+
+
+```
+
+### 19
+
+```python
+
+
+
+```
+
+### 20
+
+```python
+
+
+
+```
+
+### 21
+
+```python
+
+
+
+```
+
+
+
