@@ -1,7 +1,7 @@
 # 30 days of Pandas
 **Leetcode Link:** https://leetcode.com/studyplan/30-days-of-pandas/
 
-
+Streamlit Instructions: https://www.youtube.com/watch?v=B0MUXtmSpiA
 
 ### 1
 
@@ -240,6 +240,8 @@ df.groupby('')[''].transform(max)
 
 idx  =  df[''] == df[''] -> df[idx]
 
+result[[]]
+
 ### 13 rank-scores (M)
 
 https://leetcode.com/problems/rank-scores/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
@@ -323,45 +325,105 @@ def count_salary_categories(accounts: pd.DataFrame) -> pd.DataFrame:
 use df.shape[0] or len(df) to count row number
 
 
-### 17
+### 17 find-total-time-spent-by-each-employee
+https://leetcode.com/problems/find-total-time-spent-by-each-employee/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+```python
+
+def total_time(employees: pd.DataFrame) -> pd.DataFrame:
+    employees['total_time'] = employees['out_time']-employees['in_time']
+    df = employees.groupby(['event_day','emp_id'])['total_time'].agg(sum).reset_index()
+    df = df.rename(columns={'event_day':'day'})
+    df = df.sort_values(by=['total_time'], ascending = False)
+    return df
+
+```
+doubke check the df.rename function
+don't forget columns={}
+
+use df.groupby([''])[''].agg().reset_index()
+
+### 18 game-play-analysis
+https://leetcode.com/problems/game-play-analysis-i/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
 
+def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
+    # this could not include player_id in the df, only event_date
+    # df = activity.groupby(['player_id']).agg({'event_date':min})
 
-
+    # this could include player_id in the df
+    df = activity.groupby(['player_id'])['event_date'].agg('min').reset_index()
+    df.rename(columns={'event_date':'first_login'}, inplace=True)
+    return df
 ```
-
-### 18
 
 ```python
+# OORRR
+def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
 
-
+    df = activity.groupby(['player_id']).agg(
+        first_login = ('event_date','min')
+    ).reset_index()
+    return df
 
 ```
+df.groupby([])[''].agg()  or df.groupby(['']).agg({'':''}) or df.groupby(['']).agg(xxxxxx = ('',''))
+rename(columns={},inplace= True)
 
-### 19
+### 19 number-of-unique-subjects-taught-by-each-teacher
+
+https://leetcode.com/problems/number-of-unique-subjects-taught-by-each-teacher/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
 ```python
-
-
+def count_unique_subjects(teacher: pd.DataFrame) -> pd.DataFrame:
+    df = teacher.groupby(['teacher_id'])['subject_id'].nunique().reset_index()
+    df.rename(columns= {'subject_id':'cnt'},inplace= True)
+    return df
 
 ```
+groupby 
 
-### 20
+df[''].nunqiue().reset_index()
 
+### 20 classes-more-than-5-students
+
+https://leetcode.com/problems/classes-more-than-5-students/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 ```python
 
+def find_classes(courses: pd.DataFrame) -> pd.DataFrame:
+    df = courses.groupby(['class'])['student'].count().reset_index()
+    # need to use df[['']] to generate dataframe
+    result = df[df['student']>=5][['class']]
 
+    return result
 
 ```
+need to use df[['']] to generate dataframe
+
+use df[] generate series
+
 
 ### 21
 
+https://leetcode.com/problems/customer-placing-the-largest-number-of-orders/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
 ```python
 
+def largest_orders(orders: pd.DataFrame) -> pd.DataFrame:
+    df = orders.groupby(['customer_number'])['order_number'].count().reset_index()
+    idx = df['order_number'].max() == df['order_number']
+    result = df[idx]
+
+    return result[['customer_number']]
 
 
 ```
 
+```python
+def largest_orders(orders: pd.DataFrame) -> pd.DataFrame:
+    return orders['customer_number'].mode().to_frame()
+```
 
+- get max's index(), then get result
+- or use mode(). # use to_frame() to Convert Series to DataFrame.
 
