@@ -70,7 +70,8 @@ def article_views(views: pd.DataFrame) -> pd.DataFrame:
     return result_df
 
 ```
-use dataframe.unique(), sorted(dataframe)
+use dataframe.unique(), sorted(series)
+
 
 
 ### 5 invalid-tweets
@@ -358,7 +359,7 @@ def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
 ```
 
 ```python
-# OORRR
+# ORDER
 def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
 
     df = activity.groupby(['player_id']).agg(
@@ -367,7 +368,7 @@ def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
     return df
 
 ```
-df.groupby([])[''].agg()  or df.groupby(['']).agg({'':''}) or df.groupby(['']).agg(xxxxxx = ('',''))
+df.groupby([])[''].agg()  or **df.groupby(['']).agg({'':''})** or **df.groupby(['']).agg(xxxxxx = ('',''))**
 rename(columns={},inplace= True)
 
 ### 19 number-of-unique-subjects-taught-by-each-teacher
@@ -403,7 +404,7 @@ need to use df[['']] to generate dataframe
 use df[] generate series
 
 
-### 21
+### 21 customer-placing-the-largest-number-of-orders
 
 https://leetcode.com/problems/customer-placing-the-largest-number-of-orders/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
@@ -426,4 +427,112 @@ def largest_orders(orders: pd.DataFrame) -> pd.DataFrame:
 
 - get max's index(), then get result
 - or use mode(). # use to_frame() to Convert Series to DataFrame.
+
+
+### 22 
+
+https://leetcode.com/problems/group-sold-products-by-the-date/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def categorize_products(activities: pd.DataFrame) -> pd.DataFrame:
+
+    # num_sold = activities.groupby(['sell_date','product'])['product'].count()
+    # print(num_sold)
+
+    # sell_date   product   
+    # 2020-05-30  Basketball    1
+    #             Headphone     1
+    #             T-Shirt       1
+    # 2020-06-01  Bible         1
+    #             Pencil        1
+    # 2020-06-02  Mask          2
+
+    
+    # after counting the number, drop duplicate rows to avoid later product join redundancy
+    activities.drop_duplicates(subset=['sell_date','product'],inplace= True)
+    # first order by prodcut name, then do the join, to make sure sort products lexicographically
+    activities.sort_values(by= ['product'], ascending = True,inplace= True )
+    df_num = activities.groupby('sell_date')['product'].count().reset_index()
+    df_num.rename(columns={'product': 'num_sold'},inplace= True)
+    df = activities.groupby('sell_date', as_index= False).agg(
+        {'sell_date':'first', 'product': ','.join}
+    )
+    df.rename(columns={'product': 'products'},inplace= True)
+    result = df_num.merge(df, on ='sell_date' ,how='left')
+     # Second order by sell_date
+    result.sort_values(by= ['sell_date'], ascending = True )
+    return result
+
+```
+use two groupby to get num and product lists seperately
+
+use agg({'sell':'first','pp': ','.join}) to get join list
+
+use df.merge(df2, on='',how='')
+
+```python
+def categorize_products(activities: pd.DataFrame) -> pd.DataFrame:
+
+    df = activities.groupby('sell_date')['product'].agg(
+        [
+            ('num_sold', 'nunique'),
+            ('products', lambda x : ','.join(sorted(x.unique())))
+        ]
+    ).reset_index()
+    return df
+
+```
+use ** xxx.agg([ ('',''),('','') ])**
+
+
+
+### 23 daily-leads-and-partners
+
+https://leetcode.com/problems/daily-leads-and-partners/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def daily_leads_and_partners(daily_sales: pd.DataFrame) -> pd.DataFrame:
+    df = daily_sales.groupby(['date_id','make_name']).agg(
+        unique_leads =  ('lead_id', 'nunique'),
+        unique_partners =  ('partner_id', 'nunique')
+    ).reset_index()
+    return df
+
+```
+
+
+
+### 24 actors-and-directors-who-cooperated-at-least-three-times
+
+https://leetcode.com/problems/actors-and-directors-who-cooperated-at-least-three-times/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+
+def actors_and_directors(actor_director: pd.DataFrame) -> pd.DataFrame:
+    df = actor_director.groupby(['actor_id','director_id'])['timestamp'].count().reset_index(name='cooperation_count')
+    result = df[df['cooperation_count']>=3]
+    print(result)
+    return result[['actor_id', 'director_id']]
+
+
+    # df.value_counts()
+```
+.count().reset_index(name='')
+
+
+
+### 25 replace-employee-id-with-the-unique-identifier
+
+https://leetcode.com/problems/replace-employee-id-with-the-unique-identifier/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+
+def replace_employee_id(employees: pd.DataFrame, employee_uni: pd.DataFrame) -> pd.DataFrame:
+    #merge
+    df = employees.merge(employee_uni, on='id',how='left')
+    return df[['unique_id','name']]
+
+```
+
+use merge to do the left join
 
