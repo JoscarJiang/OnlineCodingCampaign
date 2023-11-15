@@ -536,3 +536,89 @@ def replace_employee_id(employees: pd.DataFrame, employee_uni: pd.DataFrame) -> 
 
 use merge to do the left join
 
+
+### 26 students-and-examinations
+https://leetcode.com/problems/students-and-examinations/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+
+def students_and_examinations(students: pd.DataFrame, subjects: pd.DataFrame, examinations: pd.DataFrame) -> pd.DataFrame:
+
+    df = pd.merge(students, subjects,how='cross')
+
+    count_df = examinations.groupby(['student_id','subject_name']).size().reset_index()
+    count_df.rename(columns={0: 'attended_exams' }, inplace = True)
+
+    #####  OR  use xxxx.agg(attended_exams = ('',''))
+    # exam_count = examinations.groupby(['student_id', 'subject_name']).agg(
+    #     attended_exams=('subject_name', 'count')
+    # ).reset_index()
+
+    df2 = df.merge(count_df, on= ['student_id','subject_name'], how='left').fillna(0).sort_values(by=['student_id','subject_name'])
+
+    return df2[['student_id','student_name','subject_name','attended_exams']]
+    
+    
+```
+cross merge
+
+groupby value_counts() or size()
+
+reset_index()
+
+fillna(0)
+
+
+
+### 27 managers-with-at-least-5-direct-reports
+
+https://leetcode.com/problems/managers-with-at-least-5-direct-reports/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+def find_managers(employee: pd.DataFrame) -> pd.DataFrame:
+    # use as_index=False 'managerId' will be kept as a regular column in the result DataFrame
+    df = employee.groupby(['managerId'], as_index= False).agg(
+        num = ('id', 'count')
+        )
+
+    ##################### 1 ####################
+    # result = df[df['num']>=5]
+    # return employee[employee['id'].isin(result['managerId'])][['name']]
+
+    ##################### 2 ####################
+    # or use how = inner
+    result = df[df['num']>=5][['managerId']].merge(employee[['id','name']], left_on='managerId', right_on='id', how='inner')
+    return result[['name']]
+    
+```
+employee[employee['id'].isin(result['managerId'])]
+
+merge(xxxxx, how='inner'),
+result no null
+
+### 28 sales-person
+https://leetcode.com/problems/sales-person/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
+```python
+
+def sales_person(sales_person: pd.DataFrame, company: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
+
+    order_com = orders.merge(company, on='com_id', how='left')
+    # get all the sales id related to RED company
+    order_com = order_com[order_com['name']== 'RED']
+    # use ~ get the complement
+    df = sales_person[~sales_person['sales_id'].isin(order_com['sales_id'])][['name']]
+    return df
+
+```
+use ~ get the complement
+
+### 29 big-countries
+https://leetcode.com/problems/big-countries/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+```python
+def big_countries(world: pd.DataFrame) -> pd.DataFrame:
+    df = world[
+        (world['area']>=3000000) | (world['population'] >=25000000)
+    ]
+    return df[['name','population','area']]
+```
