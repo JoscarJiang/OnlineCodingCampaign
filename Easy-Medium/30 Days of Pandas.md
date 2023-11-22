@@ -1,11 +1,16 @@
-# 30 days of Pandas
-**Leetcode Link:** https://leetcode.com/studyplan/30-days-of-pandas/
+# 30 days of Pandas/SQL
+**Leetcode Link:** 
+
+https://leetcode.com/studyplan/30-days-of-pandas/
+
+https://leetcode.com/studyplan/top-sql-50/
 
 Streamlit Instructions: https://www.youtube.com/watch?v=B0MUXtmSpiA
 
-### 1
+### 1 big-countries
 
 https://leetcode.com/problems/big-countries/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
+
 ```python
 
 def big_countries(world: pd.DataFrame) -> pd.DataFrame:
@@ -14,6 +19,15 @@ def big_countries(world: pd.DataFrame) -> pd.DataFrame:
 
 ```
 condition 
+
+```sql
+select 
+name, population,area
+from World
+where area >= 3000000
+or population >= 25000000
+
+```
 
 ### 2
 https://leetcode.com/problems/recyclable-and-low-fat-products/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
@@ -72,7 +86,13 @@ def article_views(views: pd.DataFrame) -> pd.DataFrame:
 ```
 use dataframe.unique(), sorted(series)
 
-
+```sql
+# Write your MySQL query statement below
+select distinct author_id as id
+from Views
+where viewer_id = author_id
+order by id asc
+```
 
 ### 5 invalid-tweets
 https://leetcode.com/problems/invalid-tweets/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
