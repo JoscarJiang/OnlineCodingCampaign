@@ -29,7 +29,7 @@ or population >= 25000000
 
 ```
 
-### 2
+### 2 recyclable and low fat products
 https://leetcode.com/problems/recyclable-and-low-fat-products/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 ```python
 
@@ -108,6 +108,18 @@ def invalid_tweets(tweets: pd.DataFrame) -> pd.DataFrame:
 ```
 xx_array = df[''].unique()
 dff = pd.DataFrame({'' : xx_array })
+
+```sql
+
+select 
+distinct tweet_id
+from Tweets
+where length(content)>15
+
+```
+use length in Mysql
+len() in sql server
+
 
 ### 6 calculate-special-bonus
 https://leetcode.com/problems/calculate-special-bonus/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
@@ -556,6 +568,13 @@ def replace_employee_id(employees: pd.DataFrame, employee_uni: pd.DataFrame) -> 
 
 use merge to do the left join
 
+```sql
+select 
+eu.unique_id as unique_id, e.name as name
+from Employees e left join EmployeeUNI eu on e.id = eu.id
+
+```
+keep an eye on which table on the left
 
 ### 26 students-and-examinations
 https://leetcode.com/problems/students-and-examinations/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
