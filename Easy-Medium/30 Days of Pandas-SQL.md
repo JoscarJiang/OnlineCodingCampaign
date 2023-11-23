@@ -41,6 +41,17 @@ def find_products(products: pd.DataFrame) -> pd.DataFrame:
     return df[['product_id']]
 
 ```
+
+```sql
+
+select product_id from Products
+where 
+low_fats = 'Y'
+and
+recyclable = 'Y'
+```
+
+
 ### 3 Customers who never order
 https://leetcode.com/problems/customers-who-never-order/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
@@ -56,6 +67,16 @@ def find_customers(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFram
 use ~ TO DO COMPLEMENT  
 df[ df[''].isin(df['']) ]
 df.rename(columns= { 'xx' : 'xx' } )
+
+should also drop_duplicates or unique()
+
+```sql
+WITH order_cus AS(
+    select distinct customerId from Orders
+) 
+select distinct name as Customers from customers
+where id not in (select customerId from order_cus)
+```
 
 ### 4 article-views
 https://leetcode.com/problems/article-views-i/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
@@ -143,6 +164,29 @@ df[''].str.startswith()
 
 https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.loc.html
 
+```sql
+select 
+    employee_id,
+    case when employee_id%2<>0 and name not like 'M%' then salary
+    else 0
+    end as bonus
+from Employees
+order by employee_id
+
+
+# or use if
+
+select employee_id, if(employee_id%2!=0 and name not like 'M%',salary,0) as bonus
+from Employees
+order by employee_id
+
+# orrr use ture-1 false-0
+
+    select employee_id , salary * ( employee_id%2 ) * ( name not like 'M%') as bonus
+    from employees
+    order by employee_id;
+
+```
 
 
 ### 7 fix-names-in-a-table
@@ -158,6 +202,22 @@ def fix_names(users: pd.DataFrame) -> pd.DataFrame:
 
 ```
 str.capitalize() to make name from 'aLice' to 'Alice'
+
+```sql
+SELECT 
+  user_id
+  ,CONCAT(UPPER(LEFT(name,1)),LOWER(SUBSTRING(name,2))) AS name
+FROM Users
+ORDER BY user_id
+```
+
+use concat(string1, string2)
+
+use UPPER() and LOWER()
+
+LEFT(string, index)
+
+SUBSTRING(string, index)
 
 ### 8 find-users-with-valid-e-mails
 https://leetcode.com/problems/find-users-with-valid-e-mails/solutions/3853585/regex-explained-pandas-mysql-an-effortless-and-simple-approach-with-comments/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
