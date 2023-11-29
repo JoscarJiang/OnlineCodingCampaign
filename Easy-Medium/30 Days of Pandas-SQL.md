@@ -463,6 +463,8 @@ def game_analysis(activity: pd.DataFrame) -> pd.DataFrame:
 df.groupby([])[''].agg()  or **df.groupby(['']).agg({'':''})** or **df.groupby(['']).agg(xxxxxx = ('',''))**
 rename(columns={},inplace= True)
 
+rememeber to reset_index()
+
 ### 19 number-of-unique-subjects-taught-by-each-teacher
 
 https://leetcode.com/problems/number-of-unique-subjects-taught-by-each-teacher/description/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
@@ -796,3 +798,73 @@ from Signups as s left join Confirmations as c on s.user_id= c.user_id group by 
 ```
 
 round(avg(if(column = 'xxxx',1,0)),2) as dddd
+
+
+### 31 Monthly Transactions I (M)
+https://leetcode.com/problems/monthly-transactions-i/?envType=study-plan-v2&envId=top-sql-50
+
+```python
+
+def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
+    transactions['month'] = pd.to_datetime(transactions['trans_date']).dt.strftime('%Y-%m')
+    df0 = transactions.groupby(['month','country']).agg(
+        trans_count = ('id','count'),
+        trans_total_amount = ('amount', 'sum')
+    ).reset_index()
+    df1 = transactions[transactions['state']=='approved'].groupby(['month','country']).agg(
+        approved_count = ('id','count'),
+        approved_total_amount = ('amount', 'sum')
+    ).reset_index()
+    # remember to fill na to 0
+    df = df0.merge(df1, on= ['month','country'], how ='left').fillna(0)
+    return df[['month' ,'country','trans_count','approved_count','trans_total_amount','approved_total_amount']]
+
+```
+get date:  pd.to_datetime(date_column).dt.strftime('%Y-%m')
+
+merge().fillna(0)
+
+groupby().agg().reset_index()
+
+```python
+# OTHER'S SOLUTION
+
+import pandas as pd
+import numpy as np
+
+def monthly_transactions(transactions: pd.DataFrame) -> pd.DataFrame:
+    transactions['approved'] = np.where(transactions['state'] == 'approved', transactions['amount'], np.nan)
+    transactions['month'] = transactions['trans_date'].dt.strftime("%Y-%m")
+    return transactions.groupby(['month', 'country']).agg(
+        trans_count=('state', 'count'),
+        approved_count=('approved', 'count'),
+        trans_total_amount=('amount', 'sum'),
+        approved_total_amount=('approved', 'sum')
+    ).reset_index()
+    
+```
+https://numpy.org/doc/stable/reference/generated/numpy.where.html
+
+use np.where
+
+```sql
+
+SELECT
+    LEFT(trans_date,7) AS month,
+    country,
+    count(*) AS trans_count,
+    sum(if(state='approved',1,0)) AS approved_count,
+    sum(amount) AS trans_total_amount,
+    sum(if(state='approved',amount,0)) AS approved_total_amount
+FROM Transactions
+GROUP BY month,country
+
+```
+use if(condition, Y,N) or (CASE WHEN state = 'approved' THEN 1 ELSE 0 END)
+
+get month: LEFT(date, 7), DATE_FORMAT(date,'%Y-%m')
+
+ 
+
+
+
