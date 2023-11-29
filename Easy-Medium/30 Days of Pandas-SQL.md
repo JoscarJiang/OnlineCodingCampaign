@@ -751,6 +751,7 @@ def big_countries(world: pd.DataFrame) -> pd.DataFrame:
 https://leetcode.com/problems/confirmation-rate/?envType=study-plan-v2&envId=top-sql-50
 
 ```python
+
 def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.DataFrame:
 
     merged_df = signups.merge(confirmations, on= 'user_id', how='left')
@@ -760,6 +761,8 @@ def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.
                              .rename(columns={'action': 'confirmation_rate'}))
     return confirmation_rate_df
 ```
+
+.agg({'columnxx': lambda x: round((x=='confirmed').mean(),2)})
 
 ```sql
 # beats 99.00%
@@ -791,3 +794,5 @@ select s.user_id, round(avg(if(c.action="confirmed",1,0)),2) as confirmation_rat
 from Signups as s left join Confirmations as c on s.user_id= c.user_id group by user_id;
 
 ```
+
+round(avg(if(column = 'xxxx',1,0)),2) as dddd
