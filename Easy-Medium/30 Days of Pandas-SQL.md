@@ -695,6 +695,31 @@ employee[employee['id'].isin(result['managerId'])]
 merge(xxxxx, how='inner'),
 result no null
 
+```sql
+with m_5 as (
+    select managerId,count(distinct id) as num_e
+    from Employee
+    group by managerId
+    having num_e >=5
+)
+select name from Employee
+where id in (select managerId from m_5)
+
+```
+```sql
+# beat 84.58%
+select a.name
+from Employee a
+inner join Employee b on a.id = b.managerId
+group by a.id
+having count(distinct b.id)>=5
+
+```
+use inner join
+or use cte
+if relationship exists
+
+
 ### 28 sales-person
 https://leetcode.com/problems/sales-person/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 
@@ -720,4 +745,49 @@ def big_countries(world: pd.DataFrame) -> pd.DataFrame:
         (world['area']>=3000000) | (world['population'] >=25000000)
     ]
     return df[['name','population','area']]
+```
+
+### 30 Confirmation Rate (M)
+https://leetcode.com/problems/confirmation-rate/?envType=study-plan-v2&envId=top-sql-50
+
+```python
+def confirmation_rate(signups: pd.DataFrame, confirmations: pd.DataFrame) -> pd.DataFrame:
+
+    merged_df = signups.merge(confirmations, on= 'user_id', how='left')
+    confirmation_rate_df = (merged_df.groupby('user_id')
+                             .agg({'action': lambda x: round((x=='confirmed').mean(),2)})
+                             .reset_index()
+                             .rename(columns={'action': 'confirmation_rate'}))
+    return confirmation_rate_df
+```
+
+```sql
+# beats 99.00%
+# FLOOR() and CEILING() functions to integer
+# ROUND() to decimal
+
+with co_num as (
+    select 
+        user_id,
+        count(distinct time_stamp) as total_messages,
+        sum(case when action = 'confirmed' then 1 else 0 end) as confirm_num,
+        sum(case when action = 'confirmed' then 1 else 0 end)/count(distinct time_stamp) as confirmation_rate
+    from Confirmations
+    group by user_id
+)
+select 
+    a.user_id,
+    case when isnull(b.confirmation_rate) then 0 else round(b.confirmation_rate,2) END as confirmation_rate
+from Signups a
+left join co_num b on a.user_id = b.user_id
+
+```
+
+
+```sql
+# other solution
+
+select s.user_id, round(avg(if(c.action="confirmed",1,0)),2) as confirmation_rate
+from Signups as s left join Confirmations as c on s.user_id= c.user_id group by user_id;
+
 ```
