@@ -847,6 +847,17 @@ https://numpy.org/doc/stable/reference/generated/numpy.where.html
 
 use np.where
 
+a = np.arange(10)
+
+array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+np.where(a < 5, a, 10*a)
+
+array([ 0,  1,  2,  3,  4, 50, 60, 70, 80, 90])
+
+
+np.where(condition, x , ~x)
+
 ```sql
 
 SELECT
@@ -862,9 +873,152 @@ GROUP BY month,country
 ```
 use if(condition, Y,N) or (CASE WHEN state = 'approved' THEN 1 ELSE 0 END)
 
-get month: LEFT(date, 7), DATE_FORMAT(date,'%Y-%m')
+get month: LEFT(date, 7), DATE_FORMAT(date,'%Y-%m') or SUBSTR(trans_date,1,7): substr(string,num1,num2)
+
+https://www.w3schools.com/sql/func_mysql_date_format.asp
+
+DATE_FORMAR(date, '%Y-%m-%d-%H-%i'): 2000-11-26-21-34
 
  
+DATE_FORMAT(date,'%V-%X')
+
+%X Year for the week where Sunday is the first day of the week. Used with %V
+
+%V Week where Sunday is the first day of the week (01 to 53). Used with %X
 
 
+### 32 Food Delivery II (M)
+https://leetcode.com/problems/immediate-food-delivery-ii/?envType=study-plan-v2&envId=top-sql-50
 
+```python
+def immediate_food_delivery(delivery: pd.DataFrame) -> pd.DataFrame:
+    df = delivery.sort_values(by=['customer_id','order_date']).drop_duplicates(subset='customer_id', keep='first')
+    immediate = len(df[df['customer_pref_delivery_date'] == df['order_date']])
+    rate = round(immediate/len(df)*100,2)
+
+
+    # df = delivery.groupby('customer_id').agg(
+    #     first_order = ('order_date','min'),
+    #     customer_pref_delivery_date = ('customer_pref_delivery_date','first')
+    # ).reset_index()
+    # print(df)
+    # print(len(df[df['customer_pref_delivery_date'] == df['first_order']]))
+    # print(len(df))
+    # rate = len(df[df['customer_pref_delivery_date'] == df['first_order']])/len(df)
+
+    return pd.DataFrame({'immediate_percentage':[rate]})
+
+```
+
+shape[0]: Returns the number of rows in the DataFrame.
+
+size(): Returns the total number of elements in the DataFrame (rows * columns).
+
+df_group = df_temp.groupby(["customer_id"]).head(1) head(1) get the first row
+
+```sql
+WITH rank_table AS (
+    SELECT 
+        customer_id,
+        delivery_id,
+        order_date,
+        customer_pref_delivery_date,
+        ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date) AS rank_order
+    FROM Delivery
+)
+
+SELECT
+    ROUND(SUM(IF (order_date=customer_pref_delivery_date, 1, 0))/COUNT(order_date)*100,2) AS immediate_percentage
+FROM rank_table
+WHERE rank_order=1;
+```
+
+or use ROUND(SUM(CASE WHEN order_date=customer_pref_delivery_date THEN 1 ELSE 0 END)/COUNT(order_date)*100,2) AS immediate_percentage
+
+or use min(order_date)
+
+```sql
+# Write your MySQL query statement below
+SELECT 
+    ROUND(SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END) * 100.0 / COUNT(DISTINCT customer_id), 2) AS immediate_percentage
+FROM Delivery
+WHERE (customer_id, order_date) IN (
+    SELECT customer_id, MIN(order_date) AS first_order_date
+    FROM Delivery
+    GROUP BY customer_id
+);
+```
+
+### 33 Game Play Analysis IV
+https://leetcode.com/problems/game-play-analysis-iv/?envType=study-plan-v2&envId=top-sql-50
+
+```python
+
+def gameplay_analysis(activity: pd.DataFrame) -> pd.DataFrame:
+    total_player = len(activity['player_id'].unique())
+    # get the first data and second data the player logs in
+    df = activity.groupby('player_id').agg(
+        first_date = ('event_date','min'),
+        second_date = ('event_date',lambda x: x.nsmallest(2).max())
+    ).reset_index()
+    # then compare the two date if they are day1 and day2
+    df['day_diff'] = (df['second_date']-df['first_date']).dt.days
+    active_player = len(df[df['day_diff']==1])
+    rate = round(active_player/total_player,2)
+    return pd.DataFrame({'fraction':[rate]})
+
+```
+dt.days
+
+condtion df[df['']==ss]
+
+nunique()
+
+or other solu
+```python
+def gameplay_analysis(activity: pd.DataFrame) -> pd.DataFrame:
+    
+    activity["first_day"] = activity.groupby(                   # <-- 1.  
+                              ["player_id"])[["event_date"]].transform("min")
+
+    activity["is_day"] = (activity["event_date"]                # <-- 2. 
+                           - activity["first_day"]).dt.total_seconds() == 86400
+
+    df = activity[activity['is_day']]                           # <-- 3. 
+ 
+    return pd.DataFrame({"fraction":[round(                     # <-- 4. 
+                    df.player_id.nunique() / activity.player_id.nunique(),2)]})
+```
+
+```sql
+
+# Write your MySQL query statement below
+
+SELECT 
+    # why use sum -> login is boolean, true and false
+    ROUND(SUM(login)/COUNT(DISTINCT player_id),2) AS fraction
+FROM (
+    SELECT
+    player_id,
+    DATEDIFF(event_date, min(event_date) OVER (PARTITION BY player_id))=1 AS login
+    FROM Activity
+) t
+```
+
+sum(boolean)
+
+```sql
+SELECT
+  ROUND(COUNT(DISTINCT player_id) / (SELECT COUNT(DISTINCT player_id) FROM Activity), 2) AS fraction
+FROM
+  Activity
+WHERE
+  (player_id, DATE_SUB(event_date, INTERVAL 1 DAY))
+  IN (
+    SELECT player_id, MIN(event_date) AS first_login FROM Activity GROUP BY player_id
+  )
+```
+
+DATE_SUB(event_date, INTERVAL 1 DAY) -> DAY -1
+
+DATE_DIFF(dat1, dat2 OVER(PARTITION BY player_id))
