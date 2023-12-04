@@ -1022,3 +1022,39 @@ WHERE
 DATE_SUB(event_date, INTERVAL 1 DAY) -> DAY -1
 
 DATE_DIFF(dat1, dat2 OVER(PARTITION BY player_id))
+
+### 34 Product Sales Analysis III
+https://leetcode.com/problems/product-sales-analysis-iii/description/
+
+```phthon
+def sales_analysis(sales: pd.DataFrame, product: pd.DataFrame) -> pd.DataFrame:
+    sales["first_year"] = sales.groupby("product_id")["year"].transform("min")
+
+    # Filter the DataFrame to include only rows where 'year' is equal to 'first_year'
+    sales_filtered = sales[sales["year"] == sales["first_year"]]
+
+    # Select specific columns using integer-location based indexing
+    result = sales_filtered.iloc[:, [0, 4, 2, 3]]
+
+
+def sales_analysis(sales: pd.DataFrame, product: pd.DataFrame) -> pd.DataFrame:
+  return sales.assign(first_year = sales.groupby('product_id').year.transform(min)).query("first_year == year").iloc[:,[1,5,3,4]]
+```
+
+```sql
+SELECT
+product_id,
+min(year) as first_year
+FROM Sales
+GROUP BY product_id
+)
+select 
+product_id,
+year as first_year,
+quantity,
+price
+from Sales
+where (product_id,year) in (select product_id, first_year from cte)
+
+```
+
