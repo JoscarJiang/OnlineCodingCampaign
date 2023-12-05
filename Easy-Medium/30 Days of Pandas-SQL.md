@@ -1042,6 +1042,8 @@ def sales_analysis(sales: pd.DataFrame, product: pd.DataFrame) -> pd.DataFrame:
 ```
 
 ```sql
+# Write your MySQL query statement below
+with cte as (
 SELECT
 product_id,
 min(year) as first_year
@@ -1055,6 +1057,56 @@ quantity,
 price
 from Sales
 where (product_id,year) in (select product_id, first_year from cte)
+```
+### 35 customers-who-bought-all-products
+https://leetcode.com/problems/customers-who-bought-all-products/?envType=study-plan-v2&envId=top-sql-50
 
+```python
+def find_customers(customer: pd.DataFrame, product: pd.DataFrame) -> pd.DataFrame:
+  
+    df1 = customer.groupby(['customer_id']).agg(num=('product_key','nunique')).reset_index()
+    len_p = product.shape[0]
+    print(df1)
+    df = df1[df1['num']==len_p]
+    return df[['customer_id']]
 ```
 
+use agg('nunique') to count distinct
+
+```python
+def find_customers(customer: pd.DataFrame, product: pd.DataFrame) -> pd.DataFrame:
+  df = customer.drop_duplicates(keep='first').groupby('customer_id').count().reset_index()
+  return df[df.product_key == len(product)][['customer_id']]
+```
+or drop_duplicates then count
+
+df.drop_duplicates(subset='', keep='first',inplace= True)
+
+```sql
+WITH cte2 AS(
+  SELECT
+  customer_id,
+  count(distinct product_key) as num
+  FROM Customer
+  GROUP BY customer_id
+)
+
+SELECT 
+customer_id
+FROM cte2
+WHERE num = (SELECT count(distinct product_key)
+  FROM Product)
+```
+use cte
+
+```sql
+# less efficiency, good memory
+SELECT
+  customer_id
+  FROM Customer
+  GROUP BY customer_id
+  HAVING count(distinct product_key) =(SELECT count(distinct product_key)
+  FROM Product)
+```
+
+use having by after group
