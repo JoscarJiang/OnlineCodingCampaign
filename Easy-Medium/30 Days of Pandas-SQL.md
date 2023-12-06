@@ -1110,3 +1110,49 @@ SELECT
 ```
 
 use having by after group
+
+
+### 36 consecutive-numbers
+https://leetcode.com/problems/consecutive-numbers/
+
+```python
+def consecutive_numbers(logs: pd.DataFrame) -> pd.DataFrame:
+  # sort value 
+  logs['num1']=logs['num'].shift(-1)
+  logs['num2']=logs['num'].shift(-2)
+  df = logs[(logs['num']==logs['num1']) & (logs['num2']==logs['num1'] )]
+  df.rename(columns={'num':'ConsecutiveNums'}, inplace= True)
+  df2 = df[['ConsecutiveNums']]
+  df2.drop_duplicates(subset='ConsecutiveNums',inplace=True)
+  return df2
+```
+
+use shift function, shift(-1) move the next row to the previous row
+
+when to use reset_index(): Generate a new DataFrame or Series with the index reset. This is useful when the index needs to be treated as a column, or when the index is meaningless and needs to be reset to the default before another operation. 
+
+agg() function needs reset_index() because of groupby(col1), make the col be the index.
+
+
+```sql
+WITH cte AS(
+  SELECT 
+    id,
+    num,
+    LEAD(num,1) OVER (ORDER BY id) as id_2,
+    LEAD(num,2) OVER (ORDER BY id) as id_3
+  FROM Logs
+)
+SELECT DISTINCT num AS ConsecutiveNums FROM cte
+WHERE num=id_2 AND id_2=id_3
+```
+
+or
+
+```sql
+select  DISTINCT num as ConsecutiveNums
+from Logs
+where (id+1,num) in (select * from logs)
+and (id+2,num) in (select * from logs)
+
+```
