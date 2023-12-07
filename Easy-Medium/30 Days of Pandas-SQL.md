@@ -1156,3 +1156,47 @@ where (id+1,num) in (select * from logs)
 and (id+2,num) in (select * from logs)
 
 ```
+
+### 37 product-price-at-a-given-date
+https://leetcode.com/problems/product-price-at-a-given-date/submissions/?envType=study-plan-v2&envId=top-sql-50
+
+```python
+def price_at_given_date(products: pd.DataFrame) -> pd.DataFrame:
+  # get the latest info before 2019-08-16
+  last_price = products[products['change_date'] <= '2019-08-16'].sort_values(by=['product_id','change_date'],ascending=[True, False]).drop_duplicates(subset=['product_id'],keep='first')
+  # merge the whole list of product_id
+  output = pd.merge(products[['product_id']].drop_duplicates(),last_price[['product_id','new_price']],how='left').fillna(10).rename(columns={'new_price':'price'})
+  return output 
+```
+use drop_dulicates(subset=[], keep=''), sort_values(by=[], ascending=[]) 
+
+merge(df1,df2, how='left').fillna(10)
+
+if in pandas: df.loc[condition, column] = 10
+
+```sql
+# get the latest date before 2019-08-16, then get the price
+# join two table, null be 10
+with plist as(
+  select distinct product_id from Products
+),
+latest_valid_date AS (
+  select product_id, new_price from Products where (product_id,change_date) in(
+  SELECT 
+    product_id, 
+    MAX(change_date) AS change_date
+  FROM Products
+  where change_date <='2019-08-16'
+  GROUP BY product_id
+  )
+)
+
+select 
+  p.product_id,
+  coalesce(l.new_price, 10) as price
+from plist p
+left join latest_valid_date l on p.product_id = l.product_id
+
+```
+
+error before lies in the max(date), price. couldn't get the max date and the according price directly, should use another select to get the corresponding price.
