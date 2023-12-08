@@ -1199,4 +1199,92 @@ left join latest_valid_date l on p.product_id = l.product_id
 
 ```
 
-error before lies in the max(date), price. couldn't get the max date and the according price directly, should use another select to get the corresponding price.
+error before lies in the max(date), price in one select. couldn't get the max date and the according price directly, should use another select to get the corresponding price.
+
+
+### 38 last-person-to-fit-in-the-bus
+https://leetcode.com/problems/last-person-to-fit-in-the-bus/submissions/?envType=study-plan-v2&envId=top-sql-50
+
+```python
+def last_passenger(queue: pd.DataFrame) -> pd.DataFrame:
+    queue.sort_values(by='turn', ascending = True, inplace = True)
+    # use cumsum() to do sum over
+    queue['totalweight']= queue.weight.cumsum()
+    df = queue[queue['totalweight']<=1000][['person_name']].tail(1)
+    return df
+```
+
+How to get the first/last row
+
+head(), tail()
+
+iloc[0],iloc[-1]
+
+
+```python
+
+# Below are some quick examples 
+
+# Example 1: Get last row using row position
+print(df.iloc[-1])
+
+# Example 2: Get the last row use tail()
+print(df.tail(1))
+
+# Example 3: Get last row using range index
+print(df.iloc[-1:])
+
+# Example 4: Get last row value using particular column
+print(df['Fee'].iloc[-1])
+
+# Example 5:  Get last row value using index range
+print(df['Discount'].iloc[:-1])
+
+# Example 6: Get last row using loc() function
+print(df.loc[df.index[-1]])
+
+# Example 7:  Get last row using values[]
+print(df.values[-1:])
+
+# Example 8: Get last row of particular column
+print(df['Fee'].values[-1:])
+
+# Example 9: Get the last row of DataFrame as a list
+print(df.iloc[-1].tolist())
+```
+
+My solu:
+
+```sql
+# add one row of aggregate sum
+# how to get the lastest row: order by turn desc then tale the first row
+select 
+    person_name
+from(
+    select
+        *,
+        sum(weight) OVER (ORDER by turn) as Totalweight
+    FROM Queue
+) b
+WHERE b.Totalweight<=1000
+ORDER BY turn desc
+limit 1;
+```
+
+use top 1 or limit 1
+
+other solu
+```sql
+with cte as (
+    SELECT *,
+        SUM(weight) OVER(ORDER BY turn ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) w_sum
+    FROM queue
+)
+select top 1 person_name from cte where w_sum <= 1000 order by turn desc
+
+```
+
+there are UNBOUNDED PRECEDING, UNBOUNDED FOLLOWING, N PRECEDING, N FOLLOWING, CURRENT ROW
+
+
+
