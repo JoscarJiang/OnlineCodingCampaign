@@ -418,6 +418,40 @@ def count_salary_categories(accounts: pd.DataFrame) -> pd.DataFrame:
 use df.shape[0] or len(df) to count row number
 
 
+my solu: no. because couldn't show categiry with 0 count
+```sql
+# Write your MySQL query statement below
+with cte as (
+    select
+    account_id,
+    case when income<20000 THEN "Low Salary"
+        when income>=20000 and income<=50000 THEN "Average Salary"
+        when income>50000 THEN "High Salary" ELSE null
+    END AS category
+    FROM Accounts
+)
+select 
+    category,
+    count(distinct account_id) as accounts_count
+From cte
+group by category
+
+```
+
+
+```sql
+
+# Write your MySQL query statement below
+(SELECT "Low Salary" AS category, COUNT(*) AS accounts_count FROM accounts WHERE income < 20000)
+UNION
+(SELECT "Average Salary" AS category, COUNT(*) AS accounts_count FROM accounts WHERE income BETWEEN 20000 AND 50000)
+UNION
+(SELECT "High Salary" AS category, COUNT(*) AS accounts_count FROM accounts WHERE income > 50000)
+
+```
+
+use union to show every category
+
 ### 17 find-total-time-spent-by-each-employee
 https://leetcode.com/problems/find-total-time-spent-by-each-employee/?envType=study-plan-v2&envId=30-days-of-pandas&lang=pythondata
 ```python
@@ -1285,6 +1319,5 @@ select top 1 person_name from cte where w_sum <= 1000 order by turn desc
 ```
 
 there are UNBOUNDED PRECEDING, UNBOUNDED FOLLOWING, N PRECEDING, N FOLLOWING, CURRENT ROW
-
 
 
